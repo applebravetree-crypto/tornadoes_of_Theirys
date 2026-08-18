@@ -1,0 +1,3 @@
+FU_tornadoes.addData({"type": "Feature","geometry": {"type": "LineString","coordinates": [[-73.31, 41.2],[-73.31, 41.2]]},"properties": {"season":943, "year":943, "month":4, "day":3, "hour":-99, "minute":-99, "timezone":"HAK", "windspeed":-99, "rating":"U", "width":-99, "length":-99, "duration":-99, "deaths":-99, "injuries":-99, "comments":""}});
+
+FU_tornadoes.addData({"type": "Feature","geometry": {"type": "LineString","coordinates": [[-76.215, 41.877],[-76.215, 41.877]]},"properties": {"season":943, "year":944, "month":2, "day":7, "hour":-99, "minute":-99, "timezone":"HAK", "windspeed":-99, "rating":"U", "width":-99, "length":-99, "duration":-99, "deaths":-99, "injuries":-99, "comments":""}});

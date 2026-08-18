@@ -1,0 +1,127 @@
+h2, h3 {
+    margin: 0.5em 0 0.5em 0;
+}
+h2 {
+    font-size: 1.6em;
+}
+h3 {
+    font-size: 1.2em;
+}
+html, body {
+    height: 100%;
+    margin: 0;
+}
+div.tornado_ui {
+    background-color: #ffffff;
+}
+div.tornado_ui div.subdiv {
+    border: 1px solid #000000;
+}
+div.tornado_ui div.subdiv div {
+    height: 16px;
+    width: 64px;
+    border: 1px solid #000000;
+}
+th, td {
+    border: 1px solid #000000;
+    padding: 6px 6px 6px 6px;
+}
+.leaflet-container {
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+}
+table {
+    border-collapse: collapse;
+}
+#info {
+    display: table;
+    position: relative;
+    margin: 0px auto;
+    white-space: pre-wrap;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    font-size: 12px;
+    text-align: center;
+    color: #222;
+    background: #fff;
+
+}
+.popup_header_FU {
+    background-color: #333333;
+    text-align: center;
+    color: #ffffff;
+}
+.popup_header_F0 {
+    background-color: #00CCAA;
+    text-align: center;
+    color: #ffffff;
+}
+.popup_header_F1 {
+    background-color: #0066CC;
+    text-align: center;
+    color: #ffffff;
+}
+.popup_header_F2 {
+    background-color: #DDBB11;
+    text-align: center;
+    color: #ffffff;
+}
+.popup_header_F3 {
+    background-color: #FF7700;
+    text-align: center;
+    color: #ffffff;
+}
+.popup_header_F4 {
+    background-color: #EE0000;
+    text-align: center;
+    color: #ffffff;
+}
+.popup_header_F5 {
+    background-color: #990055;
+    text-align: center;
+    color: #ffffff;
+}
+.popup_header_F6 {
+    background-color: #9900CC;
+    text-align: center;
+    color: #ffffff;
+}
+span.F {
+    padding: 0 1px 0 1px;
+    font-weight: bold;
+    font-size: 12px;
+    color: #ffffff;
+    border-radius: 25%;
+}
+span.FU {
+    background-color: #333333;
+}
+span.F0 {
+    background-color: #00CCAA;
+}
+span.F1 {
+    background-color: #0066CC;
+}
+span.F2 {
+    background-color: #DDBB11;
+}
+span.F3 {
+    background-color: #FF7700;
+}
+span.F4 {
+    background-color: #EE0000;
+}
+span.F5 {
+    background-color: #990055;
+}
+span.F6 {
+    background-color: #9900CC;
+}
+
+span.source {
+    padding: 2px 1px 0px 1px;
+    border-bottom: 1px solid #000000;
+}

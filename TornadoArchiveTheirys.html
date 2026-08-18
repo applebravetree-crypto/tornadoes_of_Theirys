@@ -88,14 +88,6 @@
 	</div>
 </div>
 
-<div class="tornado_ui" style="z-index: 800; position: absolute; bottom: 0; height: 12%; width: 100%;">
-    <div class="subdiv">
-        <div id="value_seasonMIN"></div>
-        <div id="value_seasonMAX"></div>
-    </div>
-    <p id="clicked_coords"></p>
-    <button id="remove_button" onclick="removeText()">Remove</button>
-</div>
 <script>
     
     const styles_FU = {"color": "#333333", "weight": 6};
@@ -510,22 +502,5 @@
     F5_StartMarkers.eachLayer(function (layer) {layer.setStyle(styles_StartMarker)});
     F6_StartMarkers.eachLayer(function (layer) {layer.setStyle(styles_StartMarker)});
 
-    var removeButton = document.getElementById("remove_button")
-    var clickedCoords = document.getElementById("clicked_coords")
-    map.on("click", function (e) {
-        var comma = ""
-        if (clickedCoords.innerHTML != "") {
-            comma = ","
-        }
-        var lat = Math.round((e.latlng.lat + ((Math.random() * 0.006)-0.003)) * 1000)/1000
-        var lng = Math.round((e.latlng.lng + ((Math.random() * 0.006)-0.003)) * 1000)/1000
-        // console.log(e.latlng.lng)
-        clickedCoords.innerHTML += comma + "[" + lng + ", " + lat + "]"
-    })
-
-    function removeText () {
-        clickedCoords.innerHTML = ""
-    }
-    // removeButton.onclick(removeText())
 </script>
 </body></html>

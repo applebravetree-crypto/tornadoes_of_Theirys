@@ -1,0 +1,1 @@
+FU_tornadoes.addData({"type": "Feature","geometry": {"type": "LineString","coordinates": [[-77.18, 42.12],[-77.18, 42.12]]},"properties": {"season":938, "year":938, "month":8, "day":2, "hour":-99, "minute":-99, "timezone":"HAK", "windspeed":-99, "rating":"U", "width":-99, "length":-99, "duration":-99, "deaths":-99, "injuries":-99, "comments":""}});

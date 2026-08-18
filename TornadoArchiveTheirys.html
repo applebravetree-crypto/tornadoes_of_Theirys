@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>Theirysian Tornadoes</title>
+	
+	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="" style="background-color: #213C51;">
+
+<div id="map" class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" tabindex="0" style="position: relative; height: 88%; outline-style: none;">
+	
+	<div class="leaflet-control-container">
+		<div class="leaflet-top leaflet-left">
+			<div class="leaflet-control-zoom leaflet-bar leaflet-control">
+				<a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in" aria-disabled="false">
+					<span aria-hidden="true">+</span>
+				</a>
+				<a class="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out" aria-disabled="false">
+					<span aria-hidden="true">−</span>
+				</a>
+			</div>
+		</div>
+		<div class="leaflet-top leaflet-right">
+
+		</div>
+		<div class="leaflet-bottom leaflet-left">
+
+		</div>
+		<div class="leaflet-bottom leaflet-right">
+			<div class="leaflet-control-attribution leaflet-control">
+				<a target="_blank" href="https://leafletjs.com" title="A JavaScript library for interactive maps">
+					<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8" class="leaflet-attribution-flag">
+						<path fill="#4C7BE1" d="M0 0h12v4H0z">
+
+						</path>
+						<path fill="#FFD500" d="M0 4h12v3H0z">
+
+						</path>
+						<path fill="#E0BC00" d="M0 7h12v1H0z">
+
+						</path>
+					</svg> Leaflet
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="leaflet-control-container">
+		<div class="leaflet-top leaflet-left">
+			<div class="leaflet-control-zoom leaflet-bar leaflet-control">
+				<a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in" aria-disabled="false">
+					<span aria-hidden="true">+</span>
+				</a>
+				<a class="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out" aria-disabled="false">
+					<span aria-hidden="true">−</span>
+				</a>
+			</div>
+		</div>
+		<div class="leaflet-top leaflet-right">
+
+		</div>
+		<div class="leaflet-bottom leaflet-left">
+
+		</div>
+		<div class="leaflet-bottom leaflet-right">
+			<div class="leaflet-control-attribution leaflet-control">
+				<a target="_blank" href="https://leafletjs.com" title="A JavaScript library for interactive maps">
+					<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8" class="leaflet-attribution-flag">
+						<path fill="#4C7BE1" d="M0 0h12v4H0z">
+
+						</path>
+						<path fill="#FFD500" d="M0 4h12v3H0z">
+
+						</path>
+						<path fill="#E0BC00" d="M0 7h12v1H0z">
+
+						</path>
+					</svg> Leaflet
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="tornado_ui" style="z-index: 800; position: absolute; bottom: 0; height: 12%; width: 100%;">
+    <div class="subdiv">
+        <div id="value_seasonMIN"></div>
+        <div id="value_seasonMAX"></div>
+    </div>
+    <p id="clicked_coords"></p>
+    <button id="remove_button" onclick="removeText()">Remove</button>
+</div>
+<script>
+    
+    const styles_FU = {"color": "#333333", "weight": 6};
+    const styles_F0 = {"color": "#00CCAA", "weight": 6};
+    const styles_F1 = {"color": "#0066CC", "weight": 6};
+    const styles_F2 = {"color": "#DDBB11", "weight": 6};
+    const styles_F3 = {"color": "#FF7700", "weight": 6};
+    const styles_F4 = {"color": "#EE0000", "weight": 6};
+    const styles_F5 = {"color": "#990055", "weight": 6};
+    const styles_F6 = {"color": "#9900CC", "weight": 6};
+    const styles_FU_damage_path = {"color": "#333333", "weight": 0, "opacity": 0.4};
+    const styles_F0_damage_path = {"color": "#00CCAA", "weight": 0, "opacity": 0.4};
+    const styles_F1_damage_path = {"color": "#0066CC", "weight": 0, "opacity": 0.4};
+    const styles_F2_damage_path = {"color": "#DDBB11", "weight": 0, "opacity": 0.4};
+    const styles_F3_damage_path = {"color": "#FF7700", "weight": 0, "opacity": 0.4};
+    const styles_F4_damage_path = {"color": "#EE0000", "weight": 0, "opacity": 0.4};
+    const styles_F5_damage_path = {"color": "#990055", "weight": 0, "opacity": 0.4};
+    const styles_F6_damage_path = {"color": "#9900CC", "weight": 0, "opacity": 0.4};
+    const styles_StartMarker = {"color": "#FFFFFF", "weight": 3, "opacity": 0.6};
+
+    const FU_tornadoes = L.geoJSON();
+    const F0_tornadoes = L.geoJSON();
+    const F1_tornadoes = L.geoJSON();
+    const F2_tornadoes = L.geoJSON();
+    const F3_tornadoes = L.geoJSON();
+    const F4_tornadoes = L.geoJSON();
+    const F5_tornadoes = L.geoJSON();
+    const F6_tornadoes = L.geoJSON();
+    const FU_StartMarkers = L.geoJSON();
+    const F0_StartMarkers = L.geoJSON();
+    const F1_StartMarkers = L.geoJSON();
+    const F2_StartMarkers = L.geoJSON();
+    const F3_StartMarkers = L.geoJSON();
+    const F4_StartMarkers = L.geoJSON();
+    const F5_StartMarkers = L.geoJSON();
+    const F6_StartMarkers = L.geoJSON();
+    const FU_damage_paths = L.geoJSON();
+    const F0_damage_paths = L.geoJSON();
+    const F1_damage_paths = L.geoJSON();
+    const F2_damage_paths = L.geoJSON();
+    const F3_damage_paths = L.geoJSON();
+    const F4_damage_paths = L.geoJSON();
+    const F5_damage_paths = L.geoJSON();
+    const F6_damage_paths = L.geoJSON();
+
+    var totalTornadoes = 0;
+    var totalDeaths = 0;
+    var totalInjuries = 0;
+    var totalOIS = 0;
+    var totalLength = 0;
+    var totalDuration = 0;
+</script>
+
+<script src="Tornado_Popup.js"></script>
+<script src="Tornado_Filters.js"></script>
+<script src="Tornado_Constructor.js"></script>
+
+<script src="TornadoPaths/Aculeesia/Season_00620.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00621.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00622.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00623.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00624.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00625.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00626.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00627.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00628.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00629.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00630.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00631.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00632.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00633.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00634.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00635.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00930.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00931.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00932.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00933.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00934.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00935.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00936.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00937.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00938.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00939.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00940.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00941.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00942.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00943.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00944.js"></script>
+<script src="TornadoPaths/Aculeesia/Season_00945.js"></script>
+
+<script src="TornadoPaths/Duphenya/Season_00930.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00931.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00932.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00933.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00934.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00935.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00936.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00937.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00938.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00939.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00940.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00941.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00942.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00943.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00944.js"></script>
+<script src="TornadoPaths/Duphenya/Season_00945.js"></script>
+
+<script src="TornadoPaths/Falderoo/Season_00620.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00621.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00622.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00623.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00624.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00625.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00626.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00627.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00628.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00629.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00630.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00631.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00632.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00633.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00634.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00635.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00930.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00931.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00932.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00933.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00934.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00935.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00936.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00937.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00938.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00939.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00940.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00941.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00942.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00943.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00944.js"></script>
+<script src="TornadoPaths/Falderoo/Season_00945.js"></script>
+
+<script src="TornadoPaths/Anienoland/Season_00620.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00621.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00622.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00623.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00624.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00625.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00626.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00627.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00628.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00629.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00630.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00631.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00632.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00633.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00634.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00635.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00930.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00931.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00932.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00933.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00934.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00935.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00936.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00937.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00938.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00939.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00940.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00941.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00942.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00943.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00944.js"></script>
+<script src="TornadoPaths/Anienoland/Season_00945.js"></script>
+
+<script src="TornadoPaths/Loysoi/Season_00620.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00621.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00622.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00623.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00624.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00625.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00626.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00627.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00628.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00629.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00630.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00631.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00632.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00633.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00634.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00635.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00930.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00931.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00932.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00933.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00934.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00935.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00936.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00937.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00938.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00939.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00940.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00941.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00942.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00943.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00944.js"></script>
+<script src="TornadoPaths/Loysoi/Season_00945.js"></script>
+
+<script src="TornadoPaths/Syndia/Season_00620.js"></script>
+<script src="TornadoPaths/Syndia/Season_00621.js"></script>
+<script src="TornadoPaths/Syndia/Season_00622.js"></script>
+<script src="TornadoPaths/Syndia/Season_00623.js"></script>
+<script src="TornadoPaths/Syndia/Season_00624.js"></script>
+<script src="TornadoPaths/Syndia/Season_00625.js"></script>
+<script src="TornadoPaths/Syndia/Season_00626.js"></script>
+<script src="TornadoPaths/Syndia/Season_00627.js"></script>
+<script src="TornadoPaths/Syndia/Season_00628.js"></script>
+<script src="TornadoPaths/Syndia/Season_00629.js"></script>
+<script src="TornadoPaths/Syndia/Season_00630.js"></script>
+<script src="TornadoPaths/Syndia/Season_00631.js"></script>
+<script src="TornadoPaths/Syndia/Season_00632.js"></script>
+<script src="TornadoPaths/Syndia/Season_00633.js"></script>
+<script src="TornadoPaths/Syndia/Season_00634.js"></script>
+<script src="TornadoPaths/Syndia/Season_00635.js"></script>
+<script src="TornadoPaths/Syndia/Season_00930.js"></script>
+<script src="TornadoPaths/Syndia/Season_00931.js"></script>
+<script src="TornadoPaths/Syndia/Season_00932.js"></script>
+<script src="TornadoPaths/Syndia/Season_00933.js"></script>
+<script src="TornadoPaths/Syndia/Season_00934.js"></script>
+<script src="TornadoPaths/Syndia/Season_00935.js"></script>
+<script src="TornadoPaths/Syndia/Season_00936.js"></script>
+<script src="TornadoPaths/Syndia/Season_00937.js"></script>
+<script src="TornadoPaths/Syndia/Season_00938.js"></script>
+<script src="TornadoPaths/Syndia/Season_00939.js"></script>
+<script src="TornadoPaths/Syndia/Season_00940.js"></script>
+<script src="TornadoPaths/Syndia/Season_00941.js"></script>
+<script src="TornadoPaths/Syndia/Season_00942.js"></script>
+<script src="TornadoPaths/Syndia/Season_00943.js"></script>
+<script src="TornadoPaths/Syndia/Season_00944.js"></script>
+<script src="TornadoPaths/Syndia/Season_00945.js"></script>
+
+<script src="TornadoPaths/Tinclia/Season_00620.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00621.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00622.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00623.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00624.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00625.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00626.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00627.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00628.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00629.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00630.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00631.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00632.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00633.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00634.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00635.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00930.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00931.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00932.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00933.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00934.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00935.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00936.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00937.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00938.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00939.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00940.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00941.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00942.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00943.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00944.js"></script>
+<script src="TornadoPaths/Tinclia/Season_00945.js"></script>
+
+<script>
+    // seasonMIN = 945;
+    // seasonMAX = 945;
+    yearMIN = 945;
+    yearMAX = 946;
+    monthMIN = 6;
+    monthMAX = 3;
+    // dayMIN = 1;
+    // dayMAX = 13;
+	const heightmap_layer = L.layerGroup();
+	const map_image = L.imageOverlay("Theirys_States_Mercator.png", [[-90, -180],[90, 180]])
+	const tileLayer = L.tileLayer('MapTiles/{z}_{x}_{y}.png')
+	const map = L.map('map', {
+		minZoom: 2,
+		maxZoom: 12,
+    	zoomSnap: 0.5,
+		zoomDelta: 0.5,
+		wheelPxPerZoomLevel: 90,
+		layers: [map_image]
+	}).setView([0, 0], 2);
+
+	const heightmap = L.imageOverlay("Theirys_Heightmap_Mercator.png", [[-90, -180],[90, 180]]).addTo(heightmap_layer)
+
+    const baseLayers = {
+    };
+    const overlays = {
+        "Heightmap": heightmap
+    };
+
+    const layerControl = L.control.layers(baseLayers, overlays).addTo(map);
+
+	L.control.scale().addTo(map);
+	const Coordinates = L.Control.extend({
+    onAdd: map => {
+		const container = L.DomUtil.create("div");
+		map.addEventListener("mousemove", e => {
+			container.innerHTML = `
+			Mouse: 
+			${e.latlng.lat.toFixed(4)}°N, 
+			${e.latlng.lng.toFixed(4)}°E
+			`;
+		});
+		return container;
+	}
+	});
+	map.addControl(new Coordinates({ position: "bottomleft" }));
+
+    function numLeng(number, length) {
+        var my_string = '' + number;
+        while (my_string.length < length) {
+            my_string = '0' + my_string;
+        }
+        return my_string;
+    }
+
+    FU_tornadoes.eachLayer(function (layer) {
+        tornado_constructor(FU_tornadoes, layer)
+    });
+    F0_tornadoes.eachLayer(function (layer) {
+        tornado_constructor(F0_tornadoes, layer)
+    });
+    F1_tornadoes.eachLayer(function (layer) {
+        tornado_constructor(F1_tornadoes, layer)
+    });
+    F2_tornadoes.eachLayer(function (layer) {
+        tornado_constructor(F2_tornadoes, layer)
+    });
+    F3_tornadoes.eachLayer(function (layer) {
+        tornado_constructor(F3_tornadoes, layer)
+    });
+    F4_tornadoes.eachLayer(function (layer) {
+        tornado_constructor(F4_tornadoes, layer)
+    });
+    F5_tornadoes.eachLayer(function (layer) {
+        tornado_constructor(F5_tornadoes, layer)
+    });
+    F6_tornadoes.eachLayer(function (layer) {
+        tornado_constructor(F6_tornadoes, layer)
+    });
+    if (ratingALLOW["U"] == true) {
+        FU_tornadoes.addTo(map);
+        FU_StartMarkers.addTo(map);
+    }
+    if (ratingALLOW["0"] == true) {
+        F0_tornadoes.addTo(map);
+        F0_StartMarkers.addTo(map);
+    }
+    if (ratingALLOW["1"] == true) {
+        F1_tornadoes.addTo(map);
+        F1_StartMarkers.addTo(map);
+    }
+    if (ratingALLOW["2"] == true) {
+        F2_tornadoes.addTo(map);
+        F2_StartMarkers.addTo(map);
+    }
+    if (ratingALLOW["3"] == true) {
+        F3_tornadoes.addTo(map);
+        F3_StartMarkers.addTo(map);
+    }
+    if (ratingALLOW["4"] == true) {
+        F4_tornadoes.addTo(map);
+        F4_StartMarkers.addTo(map);
+    }
+    if (ratingALLOW["5"] == true) {
+        F5_tornadoes.addTo(map);
+        F5_StartMarkers.addTo(map);
+    }
+    if (ratingALLOW["6"] == true) {
+        F6_tornadoes.addTo(map);
+        F6_StartMarkers.addTo(map);
+    }
+    F0_tornadoes.addTo(map);
+    F0_StartMarkers.addTo(map);
+    F1_tornadoes.addTo(map);
+    F1_StartMarkers.addTo(map);
+    F2_tornadoes.addTo(map);
+    F2_StartMarkers.addTo(map);
+    F3_tornadoes.addTo(map);
+    F3_StartMarkers.addTo(map);
+    F4_tornadoes.addTo(map);
+    F4_StartMarkers.addTo(map);
+    F5_tornadoes.addTo(map);
+    F5_StartMarkers.addTo(map);
+    F6_tornadoes.addTo(map);
+    F6_StartMarkers.addTo(map);
+
+    F0_tornadoes.eachLayer(function (layer) {layer.setStyle(styles_F0)});
+    F1_tornadoes.eachLayer(function (layer) {layer.setStyle(styles_F1)});
+    F2_tornadoes.eachLayer(function (layer) {layer.setStyle(styles_F2)});
+    F3_tornadoes.eachLayer(function (layer) {layer.setStyle(styles_F3)});
+    F4_tornadoes.eachLayer(function (layer) {layer.setStyle(styles_F4)});
+    F5_tornadoes.eachLayer(function (layer) {layer.setStyle(styles_F5)});
+    F6_tornadoes.eachLayer(function (layer) {layer.setStyle(styles_F6)});
+    FU_StartMarkers.eachLayer(function (layer) {layer.setStyle(styles_StartMarker)});
+    F0_StartMarkers.eachLayer(function (layer) {layer.setStyle(styles_StartMarker)});
+    F1_StartMarkers.eachLayer(function (layer) {layer.setStyle(styles_StartMarker)});
+    F2_StartMarkers.eachLayer(function (layer) {layer.setStyle(styles_StartMarker)});
+    F3_StartMarkers.eachLayer(function (layer) {layer.setStyle(styles_StartMarker)});
+    F4_StartMarkers.eachLayer(function (layer) {layer.setStyle(styles_StartMarker)});
+    F5_StartMarkers.eachLayer(function (layer) {layer.setStyle(styles_StartMarker)});
+    F6_StartMarkers.eachLayer(function (layer) {layer.setStyle(styles_StartMarker)});
+
+    var removeButton = document.getElementById("remove_button")
+    var clickedCoords = document.getElementById("clicked_coords")
+    map.on("click", function (e) {
+        var comma = ""
+        if (clickedCoords.innerHTML != "") {
+            comma = ","
+        }
+        var lat = Math.round((e.latlng.lat + ((Math.random() * 0.006)-0.003)) * 1000)/1000
+        var lng = Math.round((e.latlng.lng + ((Math.random() * 0.006)-0.003)) * 1000)/1000
+        // console.log(e.latlng.lng)
+        clickedCoords.innerHTML += comma + "[" + lng + ", " + lat + "]"
+    })
+
+    function removeText () {
+        clickedCoords.innerHTML = ""
+    }
+    // removeButton.onclick(removeText())
+</script>
+</body></html>

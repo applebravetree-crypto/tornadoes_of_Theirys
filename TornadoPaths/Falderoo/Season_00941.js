@@ -1,0 +1,5 @@
+F0_tornadoes.addData({"type": "Feature","geometry": {"type": "LineString","coordinates": [[110.348, 37.898],[110.200, 37.993]]},"properties": {"season":941, "year":941, "month":4, "day":3, "hour":15, "minute":50, "timezone":"EFO", "windspeed":-99, "rating":"0", "width":150, "length":3, "duration":3, "deaths":0, "injuries":0, "comments":""}}); // Speed: 59.5
+
+FU_tornadoes.addData({"type": "Feature","geometry": {"type": "LineString","coordinates": [[111.36, 43.44],[111.36, 43.44]] },"properties": {"season":941, "year":941, "month":4, "day":9, "hour":13, "minute":15, "timezone":"EFO", "windspeed":-99, "rating":"U", "width":-99, "length":-99, "duration":-99, "deaths":0, "injuries":0, "comments":""}}); // Speed: 44.1
+
+F1_tornadoes.addData({"type": "Feature","geometry": {"type": "LineString","coordinates": [[122.2338, 40.7676],[122.2092, 40.7837],[122.1996, 40.7951],[122.1927, 40.8128],[122.1831, 40.8221]]},"properties": {"season":941, "year":941, "month":5, "day":6, "hour":20, "minute":19, "timezone":"EFO", "windspeed":-99, "rating":"1", "width":65, "length":1.4, "duration":2.5, "deaths":0, "injuries":0, "comments":""}}); // Speed: 35.6
